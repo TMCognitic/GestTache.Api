@@ -13,3 +13,15 @@ public interface ICommandHandler<TCommand, TResult>
 {
     Result<TResult> Execute(TCommand command);
 }
+
+public interface ICommandAsyncHandler<TCommand>
+    where TCommand : ICommandDefinition
+{
+    Task<Result> ExecuteAsync(TCommand command);
+}
+
+public interface ICommandAsyncHandler<TCommand, TResult>
+    where TCommand : ICommandDefinition<TResult>
+{
+    Task<Result<TResult>> ExecuteAsync(TCommand command);
+}

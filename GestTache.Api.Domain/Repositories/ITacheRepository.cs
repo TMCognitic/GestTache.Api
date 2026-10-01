@@ -8,11 +8,11 @@ namespace GestTache.Api.Domain.Repositories
 {
     public interface ITacheRepository :
         IQueryHandler<GetTachesQuery, IEnumerable<Tache>>,
-        IQueryHandler<GetTacheByIdQuery, Tache>,
-        ICommandHandler<CreateTacheCommand, int>,
+        IQueryAsyncHandler<GetTacheByIdQuery, Tache>,
+        ICommandAsyncHandler<CreateTacheCommand, int>,
         ICommandHandler<UpdateTacheCommand>,
         ICommandHandler<DeleteTacheCommand>,
-        ICommandHandler<ClotureTacheCommand>
+        ICommandAsyncHandler<ClotureTacheCommand>
     {
     }
 }

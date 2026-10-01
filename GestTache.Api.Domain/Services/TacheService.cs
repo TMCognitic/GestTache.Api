@@ -1,5 +1,4 @@
 ﻿using BStorm.Tools.Database;
-using Cqs.Abstractions.Errors;
 using Cqs.Abstractions.Results;
 using GestTache.Api.Domain.Commands;
 using GestTache.Api.Domain.Entities;
@@ -28,9 +27,11 @@ namespace GestTache.Api.Domain.Services
             return _dbConnection.ExecuteReader("SELECT Id, Titre, Cloturee, DateCreation, UtilisateurId FROM Tache WHERE UtilisateurId = @UtilisateurId;", dr => dr.ToTache(), parameters: query).ToList();
         }
 
-        public Result<Tache> Execute(GetTacheByIdQuery query)
+        public async Task<Result<Tache>> ExecuteAsync(GetTacheByIdQuery query)
         {
-            Tache? tache = _dbConnection.ExecuteReader("SELECT Id, Titre, Cloturee, DateCreation, UtilisateurId FROM Tache WHERE Id = @Id AND UtilisateurId = @UtilisateurId;", dr => dr.ToTache(), parameters: query).SingleOrDefault();
+            IAsyncEnumerable<Tache> result = _dbConnection.ExecuteReaderAsync("SELECT Id, Titre, Cloturee, DateCreation, UtilisateurId FROM Tache WHERE Id = @Id AND UtilisateurId = @UtilisateurId;", dr => dr.ToTache(), parameters: query);
+
+            Tache? tache = await result.SingleOrDefaultAsync();
 
             if(tache is null)
             {
@@ -40,11 +41,11 @@ namespace GestTache.Api.Domain.Services
             return tache;
         }
 
-        public Result<int> Execute(CreateTacheCommand command)
+        public async Task<Result<int>> ExecuteAsync(CreateTacheCommand command)
         {
             try
             {
-                int? id = (int?)_dbConnection.ExecuteScalar("INSERT INTO Tache (Titre, UtilisateurId) OUTPUT inserted.Id VALUES (@Titre, @UtilisateurId);", parameters: command);
+                int? id = (int?)await _dbConnection.ExecuteScalarAsync("INSERT INTO Tache (Titre, UtilisateurId) OUTPUT inserted.Id VALUES (@Titre, @UtilisateurId);", parameters: command);
 
                 if(!id.HasValue)
                     return TacheErrors.NotInserted;
@@ -95,11 +96,11 @@ namespace GestTache.Api.Domain.Services
             }
         }
 
-        public Result Execute(ClotureTacheCommand command)
+        public async Task<Result> ExecuteAsync(ClotureTacheCommand command)
         {
             try
             {
-                Result<Tache> result = Execute(new GetTacheByIdQuery(command.Id));
+                Result<Tache> result = await ExecuteAsync(new GetTacheByIdQuery(command.Id));
 
                 if(result.IsFailure)
                 {

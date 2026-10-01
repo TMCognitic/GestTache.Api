@@ -7,4 +7,10 @@ namespace Cqs.Abstractions.Queries
     {
         Result<TResult> Execute(TQuery query);
     }
+
+    public interface IQueryAsyncHandler<TQuery, TResult>
+        where TQuery : IQueryDefinition<TResult>
+    {
+        Task<Result<TResult>> ExecuteAsync(TQuery query);
+    }
 }

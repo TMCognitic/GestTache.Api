@@ -34,16 +34,16 @@ namespace GestTache.Api.Controllers
 
         // GET api/<TacheController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return this.FromResult(_tacheRepository.Execute(new GetTacheByIdQuery(id)));
+            return this.FromResult(await _tacheRepository.ExecuteAsync(new GetTacheByIdQuery(id)));
         }
 
         // POST api/<TacheController>
         [HttpPost]
-        public IActionResult Post([FromBody] CreateTacheDto dto)
+        public async Task<IActionResult> Post([FromBody] CreateTacheDto dto)
         {
-            return this.FromResult(_tacheRepository.Execute(new CreateTacheCommand(dto.Titre)));
+            return this.FromResult(await _tacheRepository.ExecuteAsync(new CreateTacheCommand(dto.Titre)));
         }
 
         // PUT api/<TacheController>/5
@@ -61,9 +61,9 @@ namespace GestTache.Api.Controllers
         }
 
         [HttpPatch("cloture/{id}")]
-        public IActionResult Cloture(int id)
+        public async Task<IActionResult> Cloture(int id)
         {
-            return this.FromResult(_tacheRepository.Execute(new ClotureTacheCommand(id)));
+            return this.FromResult(await _tacheRepository.ExecuteAsync(new ClotureTacheCommand(id)));
         }
     }
 }

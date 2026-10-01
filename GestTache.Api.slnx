@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/01 App/">
+    <Project Path="GestTache.Api/GestTache.Api.csproj" />
+  </Folder>
+  <Folder Name="/02 Models/">
+    <Project Path="GestTache.Api.Domain/GestTache.Api.Domain.csproj" />
+  </Folder>
+  <Folder Name="/99 Tools/">
+    <Project Path="Cqs.Abstractions/Cqs.Abstractions.csproj" />
+  </Folder>
+</Solution>
